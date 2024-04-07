@@ -1,4 +1,6 @@
-# Exclude a variety of commonly ignored directories.
+# Ruff Configuration File
+
+# Exclude commonly ignored directories
 exclude = [
     ".bzr",
     ".direnv",
@@ -32,6 +34,8 @@ exclude = [
 # Include Jupyter notebooks alongside Python files
 extend-include = ["*.ipynb"]
 
-# Allow fix for all enabled rules (when `--fix`) is provided.
+# Linter Settings
+[lint]
+# Allow fix for all enabled rules (when `--fix` is provided)
 fixable = ["ALL"]
-unfixable = []
+# Add other linter settings as needed
