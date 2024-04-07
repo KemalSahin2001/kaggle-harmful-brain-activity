@@ -5,3 +5,5 @@ tensorflow
 keras
 albumentations
 typing
+dvc
+dvc-gdrive
