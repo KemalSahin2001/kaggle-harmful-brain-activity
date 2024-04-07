@@ -1,0 +1,12 @@
+tensorflow==2.12.1
+albumentations
+jupyter
+pandas
+numpy
+matplotlib
+scikit-learn
+dvc
+dvc[gdrive]
+typing
+ruff
+pre-commit
