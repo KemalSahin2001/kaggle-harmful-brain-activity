@@ -17,6 +17,11 @@
 
 ### Dataset Paths ###
 datasets/
+/datasets
+dataset
+
+### Ignore requirements.txt ###
+requirements.txt
 
 ### Database ###
 *.accdb
@@ -792,4 +797,3 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm,visualstudio,visualstudiocode,data,database,macos,linux,windows
-/datasets

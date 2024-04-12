@@ -68,15 +68,53 @@ The model weights for EfficientNet can be obtained from Kaggle and must be inclu
 To begin working with the project, follow these steps:
 
 1. Clone the repository to your local machine.
-2. Install required dependencies listed in `requirements.txt` using the command:
 
-```bash
-pip install -r requirements.txt
-```
+2. Create a Miniconda environment using Python 3.11:
 
-3. Download the datasets from the provided Kaggle links and place them in their respective directories.
-4. Start with the `StarterNotebook.ipynb` to get a walkthrough of the project setup and initial analysis.
+   ```bash
+   conda create --name hbaEnv python=3.11
+   ```
 
-For more detailed instructions on each step, refer to the `StarterNotebook.ipynb`.
+3. Activate the newly created environment:
 
-```
+   ```bash
+   conda activate hbaEnv
+   ```
+
+4. **Install 'pip-tools':
+
+   ```bash
+   pip install pip-tools
+   ```
+
+5. Use requiremnts.in file for installing dependecies
+
+    ```bash
+    pip-compile requrements.in
+    ```
+
+6. Install requirements using pip
+
+      ```bash
+      pip install -r requirements.txt
+      ```
+
+7. Pull the dataset using DVC:
+
+   Assuming you have a `.dvc` file set up in your repository for your datasets, run:
+
+   ```bash
+   dvc pull
+   ```
+
+   This will download the datasets from the DVC remote storage to your local machine. Ensure you have access to the remote storage, and your DVC remote is configured correctly.
+
+8. Download the datasets manually from the provided Kaggle links and place them in their respective directories if needed.
+
+9. Start with the `StarterNotebook.ipynb` to get a walkthrough of the project setup and initial analysis.
+
+Ensure you have the necessary permissions and access to the Kaggle datasets and any required API keys for DVC remotes, especially for Google Drive integration.
+
+> This guide assumes familiarity with basic terminal operations, Conda, and Python environments. The instructions include environment setup, package installation, and the initial steps to begin project analysis with a Jupyter notebook.
+>
+> For more detailed instructions on each step, refer to the `StarterNotebook.ipynb`.
