@@ -9,7 +9,6 @@ def train_model(
     DataGenerator,
     strategy,
     build_model_fn,
-    VER,
     EPOCHS,
     LR,
     TARGETS,
@@ -17,6 +16,7 @@ def train_model(
     USE_EEG_SPECTROGRAMS,
     specs,
     eeg_specs,
+    version: str = "b0",
     LOAD_MODELS_FROM=None,
 ):
     all_oof = []
@@ -54,7 +54,9 @@ def train_model(
 
         with strategy.scope():
             # Now calling build_model with its parameters inside train_model
-            model = build_model_fn(USE_KAGGLE_SPECTROGRAMS, USE_EEG_SPECTROGRAMS)
+            model = build_model_fn(
+                USE_KAGGLE_SPECTROGRAMS, USE_EEG_SPECTROGRAMS, version=version
+            )
         if LOAD_MODELS_FROM is None:
             model.fit(
                 train_gen,
@@ -63,9 +65,9 @@ def train_model(
                 epochs=EPOCHS,
                 callbacks=[LR],
             )
-            model.save_weights(f"EffNet_v{VER}_f{i}.h5")
+            model.save_weights(f"EffNet_v{version}_f{i}.h5")
         else:
-            model.load_weights(f"{LOAD_MODELS_FROM}EffNet_v{VER}_f{i}.h5")
+            model.load_weights(f"{LOAD_MODELS_FROM}EffNet_v{version}_f{i}.h5")
 
         oof = model.predict(valid_gen, verbose=1)
         all_oof.append(oof)
