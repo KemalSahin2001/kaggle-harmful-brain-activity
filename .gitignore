@@ -19,6 +19,7 @@
 datasets/
 /datasets
 dataset
+data
 
 ### Ignore requirements.txt ###
 requirements.txt
