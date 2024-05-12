@@ -13,6 +13,7 @@
 *.tax2010
 *.vcf
 *.xml
+*.h5
 
 ### Dataset Paths ###
 datasets/

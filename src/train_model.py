@@ -1,5 +1,3 @@
-import gc
-
 import numpy as np
 from sklearn.model_selection import GroupKFold
 
@@ -10,7 +8,7 @@ def train_model(
     strategy,
     build_model_fn,
     EPOCHS,
-    LR,
+    LR_scheduler,
     TARGETS,
     USE_KAGGLE_SPECTROGRAMS,
     USE_EEG_SPECTROGRAMS,
@@ -18,20 +16,23 @@ def train_model(
     eeg_specs,
     version: str = "b0",
     LOAD_MODELS_FROM=None,
+    K_FOLDS=5,  # New parameter for number of folds
+    SAMPLE_PERCENT=100,  # New parameter for dataset sampling percentage
 ):
+    # Sample the dataset
+    sampled_train = train.sample(frac=SAMPLE_PERCENT / 100.0)
+
     all_oof = []
     all_true = []
 
-    gkf = GroupKFold(n_splits=5)
+    gkf = GroupKFold(n_splits=K_FOLDS)
     for i, (train_index, valid_index) in enumerate(
-        gkf.split(train, train.target, train.patient_id)
+        gkf.split(sampled_train, sampled_train.target, sampled_train.patient_id)
     ):
-        print("#" * 25)
-        print(f"### Fold {i+1}")
+        print(f"### Fold {i+1}/{K_FOLDS} with {SAMPLE_PERCENT}% of data")
 
-        # Ensure TARGETS is correctly passed here
         train_gen = DataGenerator(
-            train.iloc[train_index],
+            sampled_train.iloc[train_index],
             shuffle=True,
             batch_size=32,
             augment=False,
@@ -40,7 +41,7 @@ def train_model(
             eeg_specs=eeg_specs,
         )
         valid_gen = DataGenerator(
-            train.iloc[valid_index],
+            sampled_train.iloc[valid_index],
             shuffle=False,
             batch_size=64,
             mode="valid",
@@ -49,32 +50,32 @@ def train_model(
             eeg_specs=eeg_specs,
         )
 
-        print(f"### train size {len(train_index)}, valid size {len(valid_index)}")
-        print("#" * 25)
-
         with strategy.scope():
-            # Now calling build_model with its parameters inside train_model
             model = build_model_fn(
                 USE_KAGGLE_SPECTROGRAMS, USE_EEG_SPECTROGRAMS, version=version
             )
+
         if LOAD_MODELS_FROM is None:
             model.fit(
                 train_gen,
                 verbose=1,
                 validation_data=valid_gen,
                 epochs=EPOCHS,
-                callbacks=[LR],
+                callbacks=[LR_scheduler],
             )
-            model.save_weights(f"EffNet_v{version}_f{i}.h5")
+            model.save_weights(
+                f"EffNet_v{version}_f{i}_p{SAMPLE_PERCENT}_k{K_FOLDS}.weights.h5"
+            )
         else:
-            model.load_weights(f"{LOAD_MODELS_FROM}EffNet_v{version}_f{i}.h5")
+            model.load_weights(
+                f"{LOAD_MODELS_FROM}EffNet_v{version}_f{i}_p{SAMPLE_PERCENT}_k{K_FOLDS}.weights.h5"
+            )
 
         oof = model.predict(valid_gen, verbose=1)
         all_oof.append(oof)
-        all_true.append(train.iloc[valid_index][TARGETS].values)
+        all_true.append(sampled_train.iloc[valid_index][TARGETS].values)
 
         del model, oof
-        gc.collect()
 
     all_oof = np.concatenate(all_oof)
     all_true = np.concatenate(all_true)
