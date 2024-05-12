@@ -25,6 +25,7 @@ data
 Models/
 models/
 model
+models
 
 ### Ignore requirements.txt ###
 requirements.txt
