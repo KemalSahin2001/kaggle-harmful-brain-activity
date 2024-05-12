@@ -1,0 +1,5 @@
+[core]
+    remote = gdriveemre
+    autostage = true
+['remote "gdriveemre"']
+    url = gdrive://1gS1AuYPHAcee1RBB2DqwqBchmbHhFnbt?usp=sharing
