@@ -21,6 +21,11 @@ datasets/
 dataset
 data
 
+### Models Path ###
+Models/
+models/
+model
+
 ### Ignore requirements.txt ###
 requirements.txt
 
